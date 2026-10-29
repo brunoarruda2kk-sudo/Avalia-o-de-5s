@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gê · Assistente 5S</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--ink:#1c2230;--muted:#5d6676;--line:#e2e5ea;--pri:#1f5fbf;--pri2:#e8f0fc;
+--s1:#c0392b;--s2:#d68910;--s3:#1e8449;--s4:#2471a3;--s5:#7d3c98;--ok:#1e8449;--warn:#b9770e}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+header{background:#14213d;color:#fff;padding:22px 18px}
+header h1{margin:0;font-size:1.3rem}
+header p{margin:4px 0 0;opacity:.8;font-size:.9rem}
+main{max-width:860px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
+h2{font-size:1.05rem;margin:0 0 4px}
+.sub{color:var(--muted);font-size:.88rem;margin:0 0 12px}
+.step{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--pri);color:#fff;font-size:.8rem;margin-right:8px}
+.intro{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(135deg,#eef3fd,#fff)}
+.avatar{flex:0 0 52px;height:52px;border-radius:50%;background:var(--pri);color:#fff;font-weight:700;font-size:1.25rem;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(31,95,191,.3)}
+.bubble p{margin:0 0 8px}.bubble p:last-child{margin:0}
+select{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+select:disabled{background:#f4f5f7}
+textarea{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;min-height:110px;resize:vertical}
+textarea:disabled{background:#f4f5f7}
+.sensos{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}
+.senso{border:2px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;background:#fff;text-align:left;font:inherit}
+.senso b{display:block;font-size:.98rem}
+.senso.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 7%,#fff)}
+.senso.on b{color:var(--c)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+button.b{font:inherit;font-weight:600;border:0;border-radius:8px;padding:11px 16px;cursor:pointer;background:var(--pri);color:#fff}
+button.b:disabled{opacity:.45;cursor:default}
+button.b.sec{background:var(--pri2);color:var(--pri)}
+button.b.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.ilista{display:flex;flex-direction:column;gap:6px}
+.iopt{display:flex;gap:10px;align-items:flex-start;text-align:left;font:inherit;font-size:.9rem;line-height:1.35;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);cursor:pointer;white-space:normal}
+.iopt:hover{border-color:#b8c4d6}
+.iopt.on{border-color:var(--pri);background:var(--pri2)}
+.inum{flex:0 0 auto;font-weight:700;color:var(--pri);min-width:2.2em}
+.res{display:none}
+.aviso{background:#fff8e6;border:1px solid #f3d98b;border-radius:10px;padding:10px 12px;font-size:.88rem;margin-bottom:12px}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;padding:3px 9px;border-radius:99px;color:#fff;margin:0 6px 4px 0}
+.tag.m{background:#5d6676}
+.acao{border:1px solid var(--line);border-radius:10px;padding:12px;margin:12px 0}
+.acao>h3{margin:0 0 6px;font-size:.95rem}
+.nct{display:block;font-weight:500;font-size:.84rem;color:var(--muted);margin-top:2px}
+.block{border-left:4px solid var(--pri);padding:6px 12px;margin:8px 0;background:#fafbfc;border-radius:0 8px 8px 0}
+.block h4{margin:0 0 2px;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;color:var(--pri)}
+[contenteditable]{outline:none;min-height:1.2em}
+[contenteditable]:focus{background:#fffbe8}
+.nota{background:#fdebd0;padding:0 3px;border-radius:3px;font-weight:600}
+.pergunta{margin-top:8px;font-size:.86rem;background:#f3eefa;border:1px solid #dccdf0;border-radius:8px;padding:8px 10px}
+.pergunta button{font:inherit;font-size:.82rem;border:0;border-radius:6px;padding:4px 10px;margin:6px 6px 0 0;cursor:pointer;background:#7d3c98;color:#fff}
+.pergunta button.off{background:#fff;color:#7d3c98;border:1px solid #7d3c98}
+.tabs{display:flex;gap:0;margin:0 0 6px;border:1px solid var(--pri);border-radius:8px;overflow:hidden}
+.tabs button{flex:1;font:inherit;font-weight:600;font-size:.88rem;padding:9px 6px;border:0;background:#fff;color:var(--pri);cursor:pointer}
+.tabs button.on{background:var(--pri);color:#fff}
+.ish{border:1px dashed #b8c4d6;border-radius:8px;padding:8px 10px;margin:6px 0 8px;background:#f7f9fc}
+.ishT{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
+.hp{font-size:.82rem;padding:2px 0 2px 10px;border-left:2px solid #b8c4d6;margin-left:4px}
+.hq{color:var(--muted)}.sim{color:#1e8449}.nao{color:#a93226}
+.hr{display:flex;gap:8px;align-items:flex-start;margin-top:6px;font-size:.86rem;font-weight:600;background:#fff;border:1px solid #14213d;border-radius:6px;padding:6px 8px}
+.hn{flex:0 0 22px;height:22px;border-radius:50%;border:2px solid #14213d;display:flex;align-items:center;justify-content:center;font-size:.78rem}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.chips span{font-size:.76rem;padding:3px 8px;border-radius:99px;border:1px solid #cfd6e0;color:var(--muted);background:#fff}
+.chips span.on{background:#14213d;color:#fff;border-color:#14213d;font-weight:600}
+.ishC{font-size:.84rem}.arr{color:var(--pri);font-weight:700;margin:0 2px}
+.tabdesc{font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.check{margin-top:8px;font-size:.84rem;border-radius:8px;padding:8px 10px}
+.check.ok{background:#eaf6ee;color:#145a32}
+.check.al{background:#fff4e5;color:#7e5109}
+.check ul{margin:4px 0 0;padding-left:18px}
+.hint{font-size:.82rem;color:var(--muted);margin-top:6px}
+details{margin-top:4px}
+summary{cursor:pointer;font-weight:600;font-size:.95rem}
+.regra{font-size:.88rem;margin:10px 0}
+.regra b{display:block}
+.ex{font-size:.85rem;border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:8px 0}
+.ex .r{color:#a93226}.ex .g{color:#1e8449}
+.hist-item{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:.88rem}
+.hist-item .top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.hist-item .top span{color:var(--muted);font-size:.8rem}
+.hist-item button{font:inherit;font-size:.8rem;border:0;background:none;color:var(--pri);cursor:pointer;padding:0;margin-right:10px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#14213d;color:#fff;padding:10px 16px;border-radius:8px;font-size:.88rem;opacity:0;transition:.25s;pointer-events:none}
+.toast.on{opacity:1}
+pre.copybox{display:none;white-space:pre-wrap;font-size:.8rem;background:#f4f5f7;padding:10px;border-radius:8px;max-height:220px;overflow:auto}
+.empty{color:var(--muted);font-size:.88rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Gê · Assistente 5S</h1>
+  <p>Planos de ação para tratativas de não conformidade</p>
+</header>
+<main>
+<section class="card intro">
+  <div class="avatar">Gê</div>
+  <div class="bubble">
+    <p><b>Olá, eu sou a Gê</b>, sua assistente na criação dos planos de ação para as tratativas de não conformidade.</p>
+    <p>Como posso te ajudar? Me conte de qual senso e de qual pergunta do checklist veio a não conformidade e o que o avaliador encontrou. Eu analiso pelo <b>Diagrama de Hosotani</b> e te devolvo duas opções de plano, <b>estrutural</b> e <b>comportamental</b>, com <b>causa</b>, <b>o quê</b> e <b>como</b>.</p>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="step">1</span>De qual senso veio esta não conformidade?</h2>
+  <p class="sub">Selecione o senso em que a não conformidade foi apontada.</p>
+  <div class="sensos">
+    <button type="button" class="senso" data-s="1" style="--c:var(--s1)"><b>1º Seleção</b></button>
+    <button type="button" class="senso" data-s="2" style="--c:var(--s2)"><b>2º Ordenação</b></button>
+    <button type="button" class="senso" data-s="3" style="--c:var(--s3)"><b>3º Limpeza</b></button>
+    <button type="button" class="senso" data-s="4" style="--c:var(--s4)"><b>4º Bem-estar</b></button>
+    <button type="button" class="senso" data-s="5" style="--c:var(--s5)"><b>5º Autodisciplina</b></button>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="step">2</span>Qual pergunta do checklist?</h2>
+  <p class="sub">Selecione a pergunta da auditoria 5S em que a não conformidade foi apontada.</p>
+  <select id="item" disabled style="display:none"><option value="">Selecione o senso primeiro…</option></select>
+  <div id="itemLista" class="ilista"><p class="empty">Selecione o senso primeiro.</p></div>
+  <div class="hint" id="itemTxt"></div>
+</section>
+
+<section class="card">
+  <h2><span class="step">3</span>Qual foi a ocorrência?</h2>
+  <p class="sub">Escreva a ocorrência do jeito que o avaliador de 5S descreveu.</p>
+  <textarea id="nc" disabled placeholder="Selecione o senso primeiro…"></textarea>
+  <div class="btns">
+    <button class="b" id="gerar" disabled>Gerar sugestão</button>
+    <button class="b ghost" id="limpar">Limpar</button>
+  </div>
+</section>
+
+<section class="card res" id="res">
+  <h2>Sugestão de tratativa</h2>
+  <div class="aviso"><b>Esta é a minha sugestão para a tratativa.</b> Revise, ajuste ao que você viu no local e complete o número da nota, quando houver. Toque em qualquer texto para editar. Eu confiro o plano enquanto você edita.</div>
+  <div id="resHead"></div>
+  <div id="acoes"></div>
+  <div class="btns">
+    <button class="b" id="salvar">Salvar no histórico</button>
+    <button class="b sec" id="copiar">Copiar texto</button>
+  </div>
+</section>
+
+<section class="card">
+  <details>
+    <summary>Como montar um plano que passa na auditoria</summary>
+    <div class="regra"><b>Regra de ouro: a ação tem que eliminar a causa.</b>Leia em voz alta: "Aconteceu [ocorrência] PORQUE [causa]. Para não voltar, vou [o quê], fazendo [como]." Se a frase não fizer sentido, o plano está errado.</div>
+    <div class="regra"><b>Causa</b>Pergunte "por quê?" até chegar em algo físico ou de processo que dá para mudar: falta de local definido, falta de identificação, falta de suporte, peça desgastada, sem responsável ou frequência, sem treinamento, reparo provisório nunca concluído.<br><span style="color:#a93226">Evite:</span> repetir a ocorrência, usar o nome do senso ("falha no senso de ordenação") e culpar a pessoa ("falha operacional", "falta de atenção", "desentendimento do colaborador").</div>
+    <div class="regra"><b>O quê</b>Verbo + objeto concreto e verificável: "Instalar suporte identificado para garrafas", "Trocar selo da bomba".<br><span style="color:#a93226">Evite:</span> "intensificar", "reforçar o 5S", "manter o 5S", "garantir o senso".</div>
+    <div class="regra"><b>Como</b>Sempre no gerúndio (realizando, instalando, abrindo nota…). Quem faz (manutenção, elétrica, civil, TI, equipe) e por qual meio (nota nº, compra, DDS com verificação). Não pode ser o O quê copiado no gerúndio.</div>
+    <div class="regra"><b>Diagrama de Hosotani</b>Toda tratativa segue as perguntas: <b>Existe procedimento padrão?</b> Não → (1) preparar o padrão e treinar todos. Sim → <b>O padrão é apropriado?</b> Não → (2) reescrever conforme o método atual, (3) reescrever com figuras ou (4) rever tecnicamente. Sim → <b>O padrão estava sendo cumprido?</b> Não → (5) treinar, (6) dar treinamento técnico ou realocar, (7) instruir e guiar quem não sente necessidade de cumprir. Sim → (8) melhorar as condições de trabalho ou (9) introduzir mecanismo à prova de erro. A opção comportamental da Gê é sempre o caminho 7.</div>
+    <div class="regra"><b>Estrutural ou comportamental</b>Estrutural: falta algo físico ou de processo (suporte, local, identificação, peça, rotina). Comportamental: o padrão existe, mas o colaborador não vê a necessidade de cumpri-lo. Mesmo no comportamental, o plano precisa de ação concreta e verificação na rotina, e não só "orientar o time".</div>
+    <div class="regra"><b>Manutenção</b>Sempre com abertura de nota e o número dela: "Abrir nota (Nota nº ____)".</div>
+    <div class="regra"><b>Várias não conformidades na mesma ocorrência</b>Um plano completo (causa, o quê e como) para cada não conformidade diferente. A Gê separa sozinha. Ex.: "lâmpada queimada e passador pontiagudo" = 2 ações.</div>
+    <div class="regra"><b>DDS / orientação sozinho</b>Só vale quando a causa é falta de conhecimento (regras de ouro, 5S). Mesmo assim, inclua a verificação: perguntar a 3 colaboradores por turno e registrar.</div>
+    <div class="regra"><b>Itens 5.3, 5.6 e 5.7</b>São consequência. Liste as NCs (do senso amarelo ou reincidentes) e feche cada uma com dono e prazo. "Instruir o time sobre 5S" não resolve.</div>
+    <div class="regra"><b>Exemplos reais da auditoria de outubro</b></div>
+    <div class="ex"><b>Luvas em cima de máquinas</b><br><span class="r">✗ Causa: falha operacional durante processo · Como: reforçar e instruir time</span><br><span class="g">✓ Causa: não há suporte de luvas próximo ao posto · O quê: instalar suporte de luvas próximo ao posto</span></div>
+    <div class="ex"><b>Pallet fora do local determinado</b><br><span class="r">✗ Causa: falha operacional no senso de ordenação · O quê: instruir time a seguir a demarcação</span><br><span class="g">✓ Causa: a demarcação não comporta o volume de pallets do turno · O quê: redimensionar e repintar a demarcação</span></div>
+    <div class="ex"><b>Montadora com fita amarrando o dosador de cola</b><br><span class="r">✗ Causa: falha operacional e improviso · Como: retirar fita e ajustar equipamento</span><br><span class="g">✓ Causa: fixação do dosador com folga/desgaste · Como: abrir nota (Nota nº ____) para ajustar o suporte e retirar a fita após o reparo</span></div>
+    <div class="ex"><b>Colaborador não sabe citar uma regra de ouro</b><br><span class="r">✗ Causa: desentendimento do colaborador</span><br><span class="g">✓ Causa: as regras são passadas no DDS sem verificação de entendimento · Como: DDS curto por regra e perguntas a 3 colaboradores por turno</span></div>
+  </details>
+</section>
+
+<section class="card">
+  <h2>Histórico (neste aparelho)</h2>
+  <div id="hist" style="margin-top:10px"><p class="empty">Nenhuma ocorrência salva ainda.</p></div>
+  <div class="btns">
+    <button class="b sec" id="copiarTodos">Copiar tudo (planilha)</button>
+    <button class="b ghost" id="apagarTodos">Apagar histórico</button>
+  </div>
+  <div class="hint">"Copiar tudo" gera texto separado por tabulação. Cole direto no Excel ou no Google Planilhas.</div>
+  <pre class="copybox" id="copybox"></pre>
+</section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const NOTA='(Nota nº ________)';
+const SENSOS={1:{nome:"Seleção",cor:"var(--s1)"},2:{nome:"Ordenação",cor:"var(--s2)"},3:{nome:"Limpeza",cor:"var(--s3)"},4:{nome:"Bem-estar",cor:"var(--s4)"},5:{nome:"Autodisciplina",cor:"var(--s5)"}};
+
+/* =====================================================================
+   CADERNO DA G — situações reconhecidas (base: auditoria 5S out/2026)
+   Cada regra: palavras-chave (rx), causa (c), o quê (o), como (h).
+   manut: envolve manutenção (nota obrigatória).
+   loc: nome do suporte/local — permite a pergunta "já existe e não é usado?"
+   sup: regras que esta substitui quando ambas aparecem.
+   ===================================================================== */
+const REGRAS=[
+ {id:"reinc",rx:/reincid|amarel|n[aã]o (est[aã]o |ficou |ficaram )?verde|n[aã]o (houve|ouve|teve) melhor|sem melhora|a[cç][oõ]es (em )?atras|m[eê]s anterior|sem evolu/,
+  c:"As não conformidades do mês anterior não tiveram ação concluída ou eficaz.",
+  o:"Listar as não conformidades pendentes/reincidentes e fechar cada uma com dono e prazo.",
+  h:"Listar as NCs por senso (nomeando quais), garantir uma ação para cada uma e acompanhar semanalmente até a próxima auditoria."},
+ {id:"regras",rx:/regras? de ouro|banner/,
+  c:"As regras de ouro são passadas no DDS sem verificação de entendimento.",
+  o:"Garantir que todo o time saiba citar as regras de ouro.",
+  h:"Fazer DDS curto por regra (uma por dia) e verificar com perguntas a 3 colaboradores por turno, registrando."},
+ {id:"trein",rx:/dificuldades? (para|em) (falar|citar|explicar)|n[aã]o soube|n[aã]o (sabe|conhece)[^.]*5 ?s|5 ?s[^.]*n[aã]o (sabe|conhece)|n[aã]o (foi )?treinad|sem treinamento|responsabilidades do 5 ?s/,
+  c:"O colaborador não recebeu treinamento/integração de 5S.",
+  o:"Treinar no 5S os colaboradores sem treinamento.",
+  h:"Levantar quem não tem treinamento de 5S, aplicar com registro de presença e verificar com perguntas na área."},
+ {id:"quadro",rx:/(quadro|farol|gest[aã]o (a|à) vista|indicador)[^.]*(desatualiz|n[aã]o preench|sem preench|atrasad|sem atualiz|sem fazer|n[aã]o feito)|(desatualiz|sem preench)[^.]*(quadro|farol)/,
+  c:"Não há responsável e frequência definidos para atualizar o quadro.",
+  o:"Definir responsável e frequência de atualização do quadro.",
+  h:"Nomear o responsável por turno, fixar o dia/horário de atualização e conferir na ronda."},
+ {id:"lampada",manut:1,rx:/l[aâ]mpada|lumin[aá]ria|refletor|ilumina[cç][aã]o/,
+  c:"Lâmpada/luminária no fim da vida útil, sem troca programada.",
+  o:`Acionar a manutenção com abertura de nota ${NOTA} para trocar a lâmpada/luminária.`,
+  h:`Abrir nota ${NOTA} para a elétrica fazer a troca e acompanhar até o encerramento da nota.`},
+ {id:"eletrico",manut:1,rx:/(fio|fia[cç]|cabo)[^.]*(expost|isolament|desgastad|sobre o piso|impr[oó]pri|desorganiz)|fios? expost|fia[cç][aã]o expost|cabos? (desencapad|expost)|desencapad|caixa de (fios|fia[cç][aã]o|passagem)|tomadas? (com|danificad|quebrad|degrad|sem tampa|solt|expost)|disjuntor|(fio|fia[cç]|cabo)[^.]*(solt|bagun|no ch[aã]o|em baixo|embaixo|em cima|sobre a mesa)|quadro el[eé]trico|canaleta|eletroduto/,
+  c:"Fiação sem proteção (canaleta, eletroduto ou tampa danificados ou inexistentes).",
+  o:`Acionar a manutenção elétrica com abertura de nota ${NOTA} para isolar e proteger a fiação.`,
+  h:`Isolar o local imediatamente, abrir nota ${NOTA} para a elétrica proteger a fiação e acompanhar até o encerramento da nota.`},
+ {id:"gambiarra",manut:1,rx:/(tubula|m[aá]quina|equipamento|sensor|cadeira|motor|mangueira|vidro)[^.]*(fita|pl[aá]stico|arame|amarr)|(fita|pl[aá]stico|arame)[^.]*(tubula|m[aá]quina|equipamento|sensor|motor)|gambiar|improvis|amarrad|amarad|enrolad|remendo|fita adesiva|durex|arame|fita (crepe|isolante)|preso com/,
+  c:"Componente com folga, desgaste ou reparo provisório que nunca recebeu o reparo definitivo, levando ao improviso.",
+  o:`Acionar a manutenção com abertura de nota ${NOTA} para o reparo definitivo e retirar o improviso.`,
+  h:`Abrir nota ${NOTA} para a manutenção fazer o reparo definitivo e, após o reparo, retirar o material improvisado.`},
+ {id:"vazamento",manut:1,rx:/vazament|vazando|pingueira|pingadeira|pingando|gotejand|goteira|jogando vapor/,
+  c:"Vedação ou componente desgastado provocando o vazamento, sem correção.",
+  o:`Acionar a manutenção com abertura de nota ${NOTA} para eliminar o vazamento.`,
+  h:`Conter e sinalizar o local, abrir nota ${NOTA} para a manutenção corrigir o vazamento e acompanhar até o encerramento da nota.`},
+ {id:"fragil",rx:/(trincad|rachad|quebrad)[^.]*(placa|quadro|acr[ií]lico|vidro|visor)|(placa|quadro|acr[ií]lico|vidro|visor)[^.]*(trincad|rachad|quebrad)/,
+  c:"Placa/quadro de material frágil danificado por impacto (risco de corpo estranho).",
+  o:"Substituir a placa/quadro por material resistente.",
+  h:"Retirar o item trincado imediatamente e instalar placa padrão de material resistente (PS, PVC ou acrílico protegido)."},
+ {id:"civil",manut:1,rx:/buraco|furo|piso (danificad|quebrad|solto|desgastad)|cer[aâ]mica|forro|teto (oxidad|danificad|quebrad|com (furo|buraco|pingueira|infiltra)|solt|caind|cai)|telhado|parede[^.]*solt|piso[^.]*(danificad|quebrad)|oxida|ferrug|enferruj|pintura|descascad|infiltra|isopainel|rodap[eé]|corrim[aã]o|degrau|parede (danificad|quebrad|manchad)|reparo d[ao]s? parede|paredes manchad/,
+  c:"Desgaste ou dano na estrutura sem programação de reparo.",
+  o:`Acionar a manutenção civil com abertura de nota ${NOTA} para recuperar a estrutura.`,
+  h:`Abrir nota ${NOTA} para a manutenção civil fazer o reparo e acompanhar até o encerramento da nota.`},
+ {id:"pragas",rx:/inseto|barata|\bratos?\b|roedor|praga|armadilha|mosca|formiga|fezes|mato/,
+  c:"Falha na barreira contra pragas (vedação, armadilha ou rotina de limpeza).",
+  o:"Acionar a empresa de controle de pragas e corrigir a falha na barreira.",
+  h:"Acionar a empresa de controle de pragas, corrigir vedações/armadilhas e incluir o ponto na checagem semanal."},
+ {id:"lixeiraQ",rx:/(suporte|coletor) (para|de) lixo[^.]*(danificad|quebrad)|lixeira[^.]*(quebrad|danificad|acionamento|sem tampa|tampa)|(acionamento|tampa)[^.]*lixeira/,
+  c:"Lixeiras no fim da vida útil, sem reposição.",
+  o:"Trocar as lixeiras danificadas.",
+  h:"Solicitar a troca das lixeiras danificadas (compra/almoxarifado) e acompanhar até a entrega."},
+ {id:"lixo",loc:"a lixeira identificada",rx:/lixo|lixeira|res[ií]duo|coleta seletiva|separa[cç][aã]o (incorret|inadequad|errad)|sem separa|separa[cç][aã]o n[aã]o (est[aá] )?corret|segrega|(res[ií]duo|lixo|coleta)[^.]*misturad|misturad[^.]*(res[ií]duo|lixo)|descarte (incorret|errad)|incorreto descarte|recicl/,
+  c:"Lixeiras sem identificação clara do tipo de resíduo ou longe do ponto de geração.",
+  o:"Identificar e posicionar as lixeiras próximas aos pontos de geração.",
+  h:"Conferir se há coletor para cada resíduo gerado, identificar e posicionar perto do ponto de geração e fazer DDS curto sobre o que vai em cada um."},
+ {id:"papeis",loc:"o porta-documentos/quadro de avisos",rx:/(pap[eé]is|papel|aviso|pasta|folha)[^.]*(parede|m[aá]quina|colad|pregad|fita)|(colad|pregad)[^.]*(papel|pap[eé]is)|fitas?[^.]*(parede|janela|vidro|porta)/,
+  c:"Não há porta-documentos/quadro para os avisos, então são colados na parede e na máquina.",
+  o:"Retirar os papéis e instalar local padrão para avisos.",
+  h:"Retirar papéis e fitas, instalar porta-documento/quadro no local e orientar que avisos só fiquem nele."},
+ {id:"luvaLixo",loc:"a lixeira de luvas",rx:/luvas? (descart[aá]ve(l|is)|usad)[^.]*(ch[aã]o|piso|mesa|esteira|espalhad)|luvas? (no|sobre o) (ch[aã]o|piso)/,
+  c:"Não há lixeira de luvas próxima aos postos.",
+  o:"Instalar lixeira identificada para luvas próxima aos postos.",
+  h:"Instalar a lixeira de luvas perto das mesas/saída da linha e mostrar ao time no DDS."},
+ {id:"pessoal",loc:"o suporte",rx:/luva|garrafa|japona|[oó]culos|\bepi|avental|mangote|copo|toca|m[aá]scara|celular|marmita/,
+  c:"Não há suporte/local identificado para {itens} próximo ao posto, então ficam sobre máquinas e mesas.",
+  o:"Instalar suporte identificado para {itens} próximo ao posto.",
+  h:"Definir o ponto, instalar suporte identificado para {itens} perto do posto e mostrar ao time no DDS."},
+ {id:"pallet",loc:"o local demarcado de pallets",rx:/(pal[el]{1,2}ete?s?|palete)[^.]*(fora|local|obstru|armazen|demarca|quebrad|espalh|sem |passagem)|(fora|obstru|quebrad)[^.]*(pal[el]{1,2}ete|palete)/,
+  c:"Pallet sem local de retorno definido ou com demarcação insuficiente para o volume do turno.",
+  o:"Definir e demarcar o local de pallets conforme a quantidade usada no turno.",
+  h:"Retirar o pallet do local, ajustar/pintar a demarcação do ponto de pallets e mostrar ao time no DDS."},
+ {id:"obstru",loc:"o local demarcado",rx:/obstru|bloquead|no meio da passagem|na passagem|[aá]rea de circula/,
+  c:"O material não tem local de retorno definido e demarcado fora da área de circulação.",
+  o:"Definir e demarcar local para o material fora da área de circulação.",
+  h:"Liberar a passagem imediatamente, demarcar o local do material fora da rota e mostrar ao time no DDS."},
+ {id:"extFalta",rx:/aus[eê]ncia d[oe] extintor|sem extintor|falta (de |do )?extintor|extintor (vencid|descarregad)/,
+  c:"Extintor retirado ou vencido sem reposição controlada.",
+  o:"Repor o extintor e incluir o ponto na inspeção de extintores.",
+  h:"Acionar a Segurança do Trabalho/brigada para repor o extintor imediatamente e incluir o ponto na inspeção mensal."},
+ {id:"docs",rx:/(lpp|\bit\b|\bpe\b|\bpr\b|ptp|procedimento|documento|instru[cç][aã]o de trabalho)[^.]*(desatualiz|vencid|sem revis)/,
+  c:"Não há responsável e rotina de revisão dos documentos da área.",
+  o:"Atualizar o documento e definir responsável pela revisão.",
+  h:"Substituir pela versão vigente, nomear o responsável e incluir a conferência dos documentos na rotina mensal."},
+ {id:"sinaliz",rx:/extintor|hidrante|ponto de encontro|sinaliza[cç][aã]o de seguran/,
+  c:"Sinalização/demarcação de segurança desgastada sem reposição.",
+  o:"Refazer a sinalização/demarcação de segurança conforme o padrão.",
+  h:"Repor a sinalização/demarcação padrão imediatamente e incluir o item na checagem da ronda."},
+ {id:"ferram",loc:"o local identificado das ferramentas",rx:/ferramenta|chave de|martelo|alicate|\brodos?\b|vassoura|balde|utens[ií]lio|gancho|mangueira|maleta/,
+  c:"As ferramentas/utensílios não têm local de guarda identificado próximo ao ponto de uso.",
+  o:"Criar local de guarda identificado (quadro de sombra/suporte) próximo ao uso.",
+  h:"Selecionar o necessário, montar quadro de sombra/suporte identificado e checar no fim do turno."},
+ {id:"ident",rx:/sem identifica|identifica[cç][aã]o|etiqueta|r[oó]tulo|sem nome|n[aã]o identificad/,
+  c:"Os locais de guarda nunca receberam identificação padrão ou ela se desgastou.",
+  o:"Identificar os locais de guarda com o conteúdo, conforme o padrão.",
+  h:"Fazer etiquetas padrão e fixar em cada porta, gaveta ou prateleira, conferindo se o conteúdo corresponde."},
+ {id:"demarc",rx:/demarca|marca[cç][aã]o (no|de|do) piso|faixa/,
+  c:"Área sem demarcação de piso ou com demarcação desgastada.",
+  o:"Demarcar/repintar o piso conforme o padrão.",
+  h:"Programar a pintura/fita de demarcação conforme o padrão e mostrar ao time o novo layout."},
+ {id:"quebrado",manut:1,rx:/quebrad|danificad|defeito|travando|n[aã]o est[aá] funciona|aus[eê]ncia d[oa] (base|parafuso|pe[cç]a|tampa)|faltando (a |o |os )?(rod|rolet|pe[cç]a|parafuso|tampa)|n[aã]o funciona|sem funcionar|sem funcionamento|travad|trincad|rachad|folgad|solto|avariad|ponta viva|pontiagud|rebarba/,
+  c:"Equipamento/componente danificado por desgaste ou impacto, sem reparo.",
+  o:`Acionar a manutenção com abertura de nota ${NOTA} para reparar ou substituir o item danificado.`,
+  h:`Abrir nota ${NOTA} para a manutenção reparar/substituir o item e acompanhar até o encerramento da nota.`},
+ {id:"energia",rx:/luz(es)? acesa|luzes ligad|ar ligado|resfriamento ligado|sem (a presen[cç]a de )?pessoas/,
+  c:"Não há responsável nem rotina para desligar luzes/equipamentos ao deixar o local.",
+  o:"Definir responsável e identificar os interruptores para desligar ao sair.",
+  h:"Identificar os interruptores, colocar aviso \"ao sair, desligue\" e incluir a checagem na ronda."},
+ {id:"sujeira",rx:/suj|poeira|incrust|gordura|plantas|vegeta|mancha|derram|teia|encardid|molhad|limpeza|farelo|cavaco|res[ií]duo de produto|produto no piso|perda de/,
+  c:"O local não está no cronograma de limpeza ou a fonte da sujeira não foi tratada.",
+  o:"Limpar o local e tratar a fonte da sujeira.",
+  h:"Fazer a limpeza, identificar e corrigir a fonte da sujeira e incluir o local no cronograma de limpeza com responsável."},
+ {id:"desnec",rx:/desnecess|desuso|fora de uso|sem utilidade|n[aã]o [eé] mais utiliz|sem uso|em desuso|sem utiliza|n[aã]o utilizad|obsolet|sucata|acumul[^.]{0,20}(material|materiais|item|itens|caixa|objeto|pe[cç]a)|(materiais|itens|caixas|objetos) acumulad|excesso|sobra|abandonad/,
+  c:"Itens sem uso permaneceram na área por falta de triagem e destino definido.",
+  o:"Retirar os itens sem uso e dar o destino correto.",
+  h:"Separar necessário x desnecessário com a equipe e dar destino (descarte, almoxarifado ou controladoria) aos itens sem uso."},
+ {id:"forLugar",loc:"o local definido",rx:/fora do (seu )?(lugar|local)|local inadequado|lugar n[aã]o apropriad|n[aã]o (estavam|est[aã]o|se encontram) (em|no|nos) (seu |seus )?(local|lugar)|armazenad[oa] (em baixo|embaixo|debaixo)|locais n[aã]o|desorganiza|espalhad|sem local|n[aã]o pr[eé]-?determinad|sobre (a |as )?(m[aá]quina|mesa|bancada)|em cima d/,
+  c:"Os materiais não têm local pré-determinado e identificado para todos os itens.",
+  o:"Definir local de guarda identificado para cada material.",
+  h:"Levantar os materiais usados, definir o local por frequência de uso, identificar com etiqueta/demarcação e apresentar ao time."}
+];
+// Quando uma regra aparece, ela torna desnecessárias as regras listadas
+const SUPRIME={lampada:["civil"],eletrico:["quebrado","forLugar"],gambiarra:["quebrado"],vazamento:["sujeira","obstru","sinaliz","forLugar","civil"],fragil:["quebrado","sinaliz"],civil:["quebrado","sujeira"],
+ lixeiraQ:["quebrado","lixo"],luvaLixo:["pessoal","lixo","forLugar","sujeira"],pessoal:["forLugar"],pallet:["obstru","forLugar"],obstru:["forLugar","sinaliz"],extFalta:["sinaliz","obstru"],docs:["quadro"],ferram:["forLugar","ident"],
+ papeis:["forLugar","civil"],reinc:["quebrado","civil","lampada","forLugar"],quadro:["forLugar"],lixo:["sujeira","forLugar","ident","desnec"],pragas:["sujeira"],sujeira:["forLugar"],energia:["desnec"],trein:["sujeira","lixo"],sinaliz:["ident","demarc"],regras:[]};
+
+// Quando o gestor confirma que o suporte/local já existe e não é usado
+const COMPORT={
+ c:loc=>`Já existe ${loc}, mas o colaborador não vê a necessidade de usá-lo, porque o padrão não é verificado na rotina do turno.`,
+ o:"Incluir a verificação do padrão na rotina do turno (ronda/troca de turno).",
+ h:loc=>`Corrigir a condição junto com o colaborador, confirmar se ${loc} está perto e comporta o necessário, mostrar o impacto no DDS e incluir o item na checagem da ronda.`
+};
+// Padrão que deixou de ser cumprido — usado na opção COMPORTAMENTAL
+const PAD={reinc:"concluir as ações do 5S dentro do prazo",regras:"conhecer e praticar as regras de ouro",trein:"conhecer e praticar o 5S",quadro:"manter o quadro atualizado",
+ lampada:"comunicar lâmpadas queimadas para abertura de nota",eletrico:"comunicar fiação exposta ou danificada para abertura de nota",gambiarra:"acionar a manutenção em vez de improvisar",
+ vazamento:"comunicar vazamentos para abertura de nota",fragil:"comunicar placas e quadros danificados",civil:"comunicar danos na estrutura para abertura de nota",
+ pragas:"manter a área livre de resíduos e as portas e vedações fechadas",lixeiraQ:"comunicar lixeiras danificadas para troca",lixo:"descartar cada resíduo na lixeira correta",
+ papeis:"fixar avisos só no local padrão",luvaLixo:"descartar as luvas na lixeira",pessoal:"guardar {itens} no local definido",pallet:"devolver os pallets ao local demarcado",
+ obstru:"manter a área de circulação livre",extFalta:"manter os extintores no local e comunicar a falta",docs:"usar e manter atualizados os documentos da área",
+ sinaliz:"manter a sinalização de segurança íntegra e comunicar o desgaste",ferram:"devolver ferramentas e utensílios ao local definido após o uso",
+ ident:"guardar os materiais conforme a identificação",demarc:"respeitar a demarcação do piso",quebrado:"comunicar itens danificados para abertura de nota",
+ energia:"desligar luzes e equipamentos ao sair",sujeira:"manter o local limpo durante e após a atividade",desnec:"retirar do posto o que não é usado",forLugar:"guardar os materiais no local definido"};
+const PADI={"1.1":"manter no posto só o necessário","1.2":"manter no posto só a quantidade necessária de material","1.3":"evitar e recolher as perdas de material no piso","1.4":"desligar luzes e equipamentos ao sair",
+ "1.5":"comunicar falhas nos equipamentos para abertura de nota","1.6":"devolver as ferramentas ao local de uso","1.7":"manter os materiais da tarefa no local próprio","1.8":"recolher as impressões",
+ "1.9":"manter a gestão à vista atualizada","1.10":"manter a área de circulação livre","1.11":"comunicar equipamentos sem uso para destino","2.1":"comunicar fiação e tubulação em mau estado para abertura de nota",
+ "2.2":"usar e manter atualizados os documentos","2.3":"manter a área organizada durante o trabalho","2.4":"manter a sinalização de segurança íntegra","2.5":"descartar cada resíduo na lixeira correta",
+ "2.6":"respeitar os controles visuais da área","2.7":"guardar os materiais nos locais pré-determinados","2.8":"guardar os materiais conforme a identificação","3.1":"manter o local limpo durante e após a atividade",
+ "3.2":"tratar e comunicar as fontes de sujeira","3.3":"manter a área livre de resíduos que atraem pragas","3.4":"recolher materiais que podem virar corpo estranho","3.5":"limpar as ferramentas após o uso",
+ "3.6":"limpar equipamentos e utensílios após o uso","3.7":"não fixar fitas e papéis fora do local padrão","4.1":"usar o EPI correto e íntegro","4.2":"adotar a postura correta no posto",
+ "4.3":"conhecer e praticar as regras de ouro","4.4":"cumprir as regras de BPF","4.5":"comunicar condições de risco para abertura de nota","5.1":"incluir o 5S na troca de turno",
+ "5.2":"conhecer e praticar o 5S","5.3":"concluir as ações do 5S dentro do prazo","5.4":"manter o farol do 5S atualizado","5.5":"participar dos trabalhos de melhoria contínua",
+ "5.6":"concluir as ações do mês anterior","5.7":"concluir as ações dos sensos não verdes"};
+const PADS={1:"manter no posto só o necessário",2:"guardar cada item no local definido",3:"manter o local limpo",4:"cumprir as regras de segurança e bem-estar",5:"cumprir as rotinas do 5S"};
+function comportamental(p,manut,loc){
+ if(loc) return {c:`Já existe ${loc}, mas o colaborador não vê a necessidade de seguir esse padrão, porque ele não é verificado na rotina do turno.`,
+  o:`Incluir a verificação do uso de ${loc} na rotina do turno (ronda/troca de turno).`,
+  h:`Corrigindo a condição junto com o colaborador, mostrando no DDS o impacto de não ${p} e verificando na ronda com 3 colaboradores por turno.`};
+ return {c:`O padrão de ${p} existe, mas o colaborador não vê a necessidade de cumpri-lo, porque ele não é verificado na rotina do turno.`,
+  o:`Incluir a verificação do padrão de ${p} na rotina do turno (ronda/troca de turno).`,
+  h:manut?`Abrindo nota ${NOTA} para corrigir a falha, reforçando no DDS o padrão de ${p} e verificando na ronda se as falhas estão sendo comunicadas.`
+   :`Corrigindo a condição junto com o colaborador, mostrando no DDS o impacto de não ${p} e verificando na ronda com 3 colaboradores por turno.`};
+}
+const JA_EXISTE=/mesmo (com|tendo|havendo|existindo)|apesar|j[aá] (existe|tem|h[aá]|possui)|tem suporte|existe suporte|existe local|existe lixeira|tem lixeira|h[aá] lixeira|fora da demarca|fora do local (definido|determinado|identificado)|n[aã]o (usa|utiliza|respeita)/;
+
+const CHECK={
+ "1.1":{p:"Existem materiais e objetos desnecessários no posto de trabalho? (Sobre as máquinas, nos armários, arquivos, gavetas e mesas.",c:`Itens sem uso ou de apoio não têm local definido fora do posto, então ficam sobre máquinas, mesas e armários.`,o:`Retirar o desnecessário e definir local identificado para os itens de apoio.`,h:`Separar necessário x desnecessário com a equipe, dar destino ao que não tem uso e criar ponto de guarda identificado para o restante.`},
+ "1.2":{p:"Há acúmulo de matérias-primas, insumos ou produtos nas mesas, esteiras ou caixas que possam gerar queda desses itens no piso?",c:`Não há limite definido de quantidade de matéria-prima/insumo no posto, então o material acumula além do necessário.`,o:`Definir a quantidade máxima de material no posto e o ponto de abastecimento.`,h:`Definir com a equipe o limite de material por posto, identificar o limite no local e ajustar a frequência de abastecimento.`},
+ "1.3":{p:"Há perda de matérias-primas, insumos ou produto no piso?",c:`Falta anteparo/bandeja ou ajuste do equipamento no ponto onde o material cai no piso.`,o:`Instalar anteparo/bandeja ou ajustar o equipamento no ponto de queda de material.`,h:`Identificar o ponto exato da perda e abrir nota ${NOTA} para a manutenção instalar anteparo/ajustar o equipamento, acompanhando até o encerramento.`,manut:1},
+ "1.4":{p:"Há salas, anexos ou câmaras sem a presença de pessoas, com as luzes acesas ou o sistema de resfriamento ligado sem necessidade?",c:`Não há responsável nem rotina para desligar luzes/equipamentos ao deixar o local.`,o:`Definir responsável e identificar os interruptores para desligar ao sair.`,h:`Identificar os interruptores, colocar aviso \"ao sair, desligue\" e incluir a checagem na ronda.`},
+ "1.5":{p:"Equipamentos e instalações de trabalho estão em bom estado? Sem vazamentos (água, vapor, lubrificantes, produto) ou desperdícios nos equipamentos e instalações? Sem \"gambiarras\", sem plásticos, fitas ou arames amarrados nos equipamentos ou instalações?",c:`Equipamento/instalação com desgaste ou dano sem reparo definitivo.`,o:`Acionar a manutenção com abertura de nota ${NOTA} para o reparo definitivo.`,h:`Abrir nota ${NOTA} para a manutenção reparar o equipamento/instalação, retirar qualquer improviso após o reparo e acompanhar até o encerramento.`,manut:1},
+ "1.6":{p:"O acesso as ferramentas/ equipamentos de trabalho são de fácil acesso?",c:`Ferramentas guardadas longe do ponto de uso ou com acesso obstruído.`,o:`Reposicionar as ferramentas próximo ao ponto de uso, com acesso livre.`,h:`Definir com a equipe o local de cada ferramenta pela frequência de uso, liberar o acesso e identificar o local.`},
+ "1.7":{p:"Os materiais necessários para execução da tarefa estão disponíveis em um local próprio para eles? Observar se há matéria prima/insumo em excesso ou em falta para a execução da tarefa/plano de produção.",c:`Não há local próprio nem quantidade padrão definidos para os materiais da tarefa.`,o:`Definir local próprio e quantidade padrão dos materiais da tarefa.`,h:`Definir o local e a quantidade mínima/máxima com o planejamento, identificar e conferir no início do turno.`},
+ "1.8":{p:"Existem impressões abandonadas nas impressoras ou nos coletores de lixo ?",c:`Não há rotina de recolhimento das impressões nem orientação para imprimir só o necessário.`,o:`Recolher as impressões abandonadas e definir rotina de verificação da impressora.`,h:`Retirar as impressões, colocar aviso na impressora e incluir a checagem na ronda diária.`},
+ "1.9":{p:"A gestão a vista está de acordo com o padrão e está atualizada?",c:`Não há responsável e frequência definidos para atualizar o quadro.`,o:`Definir responsável e frequência de atualização do quadro.`,h:`Nomear o responsável por turno, fixar o dia/horário de atualização e conferir na ronda.`},
+ "1.10":{p:"Existem espaços reservados para circulação e estão desobstruídos?",c:`O material não tem local de retorno definido e demarcado fora da área de circulação.`,o:`Definir e demarcar local para o material fora da área de circulação.`,h:`Liberar a passagem imediatamente, demarcar o local do material fora da rota e mostrar ao time no DDS.`},
+ "1.11":{p:"Há máquinas, equipamentos e acessórios sem utilizar na área?",c:`Máquinas/equipamentos sem uso mantidos na área por falta de destino definido.`,o:`Dar destino às máquinas e equipamentos sem uso.`,h:`Levantar os itens sem uso e solicitar o destino (descarte, realocação ou baixa pela controladoria) com prazo.`},
+ "2.1":{p:"Existem tubulações/fios expostos dificultando a passagem ou facilitando e ocorrência de acidente? As tubulações existentes estão identificadas por cores de acordo com a norma? (ar - azul; água - verde; Gás - amarelo)",c:`Fiação/tubulação sem proteção ou sem identificação por cor conforme a norma.`,o:`Acionar a manutenção com abertura de nota ${NOTA} para proteger a fiação e identificar as tubulações por cor.`,h:`Abrir nota ${NOTA} para a manutenção proteger/organizar os fios e identificar as tubulações conforme a norma (ar azul, água verde, gás amarelo), acompanhando até o encerramento.`,manut:1},
+ "2.2":{p:"As informações usadas na execução da tarefa estão atualizada, disponíveis para realização do trabalho (PTP, IT, PE, PR)?",c:`Não há responsável e rotina de revisão dos documentos da área.`,o:`Atualizar os documentos (PTP, IT, PE, PR) e definir responsável pela revisão.`,h:`Substituir pela versão vigente, deixar disponível no posto, nomear o responsável e incluir a conferência na rotina mensal.`},
+ "2.3":{p:"A área permanece organizada durante a execução do trabalho? Os materiais (aventais, luvas mangotes) e utensílios estão em locais adequados?",c:`Os materiais de uso no processo (aventais, luvas, mangotes, utensílios) não têm local definido próximo ao posto.`,o:`Definir e identificar local para os materiais de uso no processo.`,h:`Instalar suportes identificados perto do posto e conferir a organização na ronda.`},
+ "2.4":{p:"É fácil a visualização de placas e avisos de segurança identificando corretamente as áreas de risco? Existe indicação visível dos extintores, saídas de emergência e pontos de encontro? As placas ou quadros estão íntegros, sem presença de trincas ou rachaduras que possam gerar presença de corpo extranho no processo.",c:`Sinalização de segurança desgastada, danificada ou ausente, sem reposição.`,o:`Repor a sinalização de segurança conforme o padrão.`,h:`Retirar placas danificadas (risco de corpo estranho), instalar sinalização padrão em material resistente e incluir na checagem da ronda.`},
+ "2.5":{p:"Existem lixeiras para todos os resíduos gerados na área e estes são corretamente separados? Os sacos de lixo das lixeiras estão íntegros? OBS: Quando as lixeiras possuirem tampas, avaliar o funcionamento e integridade delas.",c:`Lixeiras sem identificação clara do tipo de resíduo ou longe do ponto de geração.`,o:`Identificar e posicionar as lixeiras próximas aos pontos de geração.`,h:`Conferir se há coletor para cada resíduo gerado, identificar e posicionar perto do ponto de geração e fazer DDS curto sobre o que vai em cada um.`},
+ "2.6":{p:"Há controles visuais aplicados na área de trabalho? (demarcações de piso, faixas de trabalho de instrumentos, placas de identificação de posicionamento de materiais e identificação de armários e/ou gavetas).",c:`Área sem controles visuais (demarcação de piso, identificação de materiais, armários ou gavetas).`,o:`Implantar os controles visuais que faltam conforme o padrão.`,h:`Levantar o que falta (demarcação, placas, etiquetas), programar a execução e apresentar ao time.`},
+ "2.7":{p:"As ferramentas, equipamentos e materiais de trabalho estão armazenados nos locais pré-determinados?",c:`Os materiais não têm local pré-determinado e identificado para todos os itens.`,o:`Definir local de guarda identificado para cada material.`,h:`Levantar os materiais usados, definir o local por frequência de uso, identificar com etiqueta/demarcação e apresentar ao time.`},
+ "2.8":{p:"As salas, gavetas e armários estão identificados? O conteúdo armazenado está de acordo com a identificação?",c:`Salas, gavetas e armários sem identificação padrão ou com conteúdo diferente do identificado.`,o:`Identificar os locais de guarda e ajustar o conteúdo à identificação.`,h:`Fazer etiquetas padrão, fixar em cada porta, gaveta ou prateleira e reorganizar o conteúdo conforme a identificação.`},
+ "3.1":{p:"As paredes, forro e vidraças, pisos, armários , luminárias, passarelas apresentam sujidades?",c:`O local não está no cronograma de limpeza com frequência adequada.`,o:`Limpar o local e incluí-lo no cronograma de limpeza.`,h:`Fazer a limpeza, incluir o local no cronograma com responsável e frequência e conferir na ronda.`},
+ "3.2":{p:"As Fontes de sujeira são trabalhadas pela área?",c:`A fonte de sujeira foi identificada, mas não tem ação de eliminação com responsável e prazo.`,o:`Eliminar ou controlar a fonte de sujeira.`,h:`Mapear cada fonte de sujeira com responsável e prazo e, quando envolver equipamento, abrir nota ${NOTA} e acompanhar até o encerramento.`,manut:1},
+ "3.3":{p:"Há presença ou vestígios de insetos, roedores ou outros animais?",c:`Falha na barreira contra pragas (vedação, armadilha ou rotina de limpeza).`,o:`Acionar a empresa de controle de pragas e corrigir a falha na barreira.`,h:`Acionar a empresa de controle de pragas, corrigir vedações/armadilhas e incluir o ponto na checagem semanal.`},
+ "3.4":{p:"Há presença de outros contaminantes como fragmentos de plástico, metais, vidro etc?",c:`Material frágil, solto ou desgastado exposto ao processo, sem retirada na rotina.`,o:`Retirar o contaminante e eliminar a fonte.`,h:`Retirar o material imediatamente, identificar de onde veio e corrigir a fonte (troca de peça por nota ${NOTA} ou ajuste na rotina).`,manut:1},
+ "3.5":{p:"As ferramentas de trabalho estão limpas?",c:`As ferramentas não estão incluídas na rotina de limpeza ao fim do uso.`,o:`Incluir a limpeza das ferramentas na rotina de fim de turno.`,h:`Definir local e material de limpeza das ferramentas, incluir no checklist de fim de turno e conferir na ronda.`},
+ "3.6":{p:"Os equipamentos e utensílios utilizados no processo estão limpos?",c:`Equipamentos e utensílios fora do cronograma de limpeza ou com frequência insuficiente.`,o:`Limpar os equipamentos/utensílios e ajustar o cronograma de limpeza.`,h:`Fazer a limpeza, revisar a frequência no cronograma com responsável definido e conferir na ronda.`},
+ "3.7":{p:"Existem fitas, papéis ou buracos nas paredes?",c:`Não há local padrão para avisos e os furos/fitas antigos não foram reparados.`,o:`Retirar fitas e papéis e reparar os furos da parede.`,h:`Retirar fitas/papéis, instalar porta-documento para avisos e abrir nota ${NOTA} para a manutenção civil fechar os furos.`,manut:1},
+ "4.1":{p:"Os EPI's estão sendo usados adequadamente, íntegros e estão em conformidade com as normas da empresa?",c:`EPI não está disponível ou íntegro no posto, ou o uso correto não é verificado na rotina.`,o:`Garantir EPI íntegro disponível no posto e verificar o uso na rotina.`,h:`Conferir disponibilidade e integridade do EPI no posto, trocar os danificados e incluir o uso na checagem da ronda.`,excl:1},
+ "4.2":{p:"A postura ergonômica adotada pelos funcionários é adequada ?",c:`Posto de trabalho com altura/alcance inadequados ou sem orientação de postura.`,o:`Ajustar o posto à postura correta com apoio da Segurança/Ergonomia.`,h:`Solicitar avaliação ergonômica ao SESMT, ajustar o posto (altura, apoio, alcance) e orientar o time com verificação.`},
+ "4.3":{p:"Há funcionários praticando atividades inseguras? Todos conhecem as regras de ouro?",c:`As regras de ouro são passadas no DDS sem verificação de entendimento.`,o:`Garantir que todo o time saiba citar as regras de ouro.`,h:`Fazer DDS curto por regra (uma por dia) e verificar com perguntas a 3 colaboradores por turno, registrando.`},
+ "4.4":{p:"De maneira geral as normas de BPF no local de trabalho são mantidas?",c:`As regras de BPF da área não estão visíveis nem são verificadas na rotina.`,o:`Corrigir o desvio de BPF e incluir a verificação na rotina.`,h:`Corrigir o desvio na hora, deixar as regras de BPF visíveis no acesso e verificar na ronda com 3 colaboradores por turno.`},
+ "4.5":{p:"As condições de segurança, iluminação, passeios, calçadas, corrimãos são adequados?",c:`Condição de segurança, iluminação ou estrutura deteriorada sem reparo programado.`,o:`Acionar a manutenção com abertura de nota ${NOTA} para corrigir a condição.`,h:`Isolar/sinalizar o risco, abrir nota ${NOTA} para a manutenção corrigir e acompanhar até o encerramento.`,manut:1},
+ "5.1":{p:"O time da área realiza trocas de turno e o 5S faz parte da pauta? OBS: Verificar caderno de troca de turno.",c:`O 5S não está incluído como pauta fixa no caderno de troca de turno.`,o:`Incluir o 5S como pauta fixa da troca de turno.`,h:`Incluir o campo de 5S no caderno de troca de turno e o supervisor conferir o registro diariamente.`},
+ "5.2":{p:"Os funcionários conhecem suas responsabilidades do 5S? (amostragem mínima de 3 funcionários).",c:`O colaborador não recebeu treinamento/integração de 5S.`,o:`Treinar no 5S os colaboradores sem treinamento.`,h:`Levantar quem não tem treinamento de 5S, aplicar com registro de presença e verificar com perguntas a 3 colaboradores na área.`},
+ "5.3":{p:"Existem ações planejadas e executadas dentro do prazo para todas as evidências identificadas na avaliação anterior.",c:`As ações da avaliação anterior não tiveram acompanhamento semanal e ficaram fora do prazo.`,o:`Listar as ações pendentes da avaliação anterior e fechar cada uma com dono e prazo.`,h:`Listar as NCs pendentes (nomeando quais), garantir uma ação para cada uma e acompanhar semanalmente até a próxima auditoria.`,reinc:1},
+ "5.4":{p:"A área mantém o farol do 5S atualizado e houve melhoria na nota da avaliação do último mês em comparação com a avalição do mês anterior.",c:`Não há responsável nem data fixa para atualizar o farol 5S e acompanhar a evolução.`,o:`Definir responsável e frequência de atualização do farol 5S.`,h:`Nomear responsável, atualizar o farol a cada nota mensal com o comparativo do mês anterior e revisar na reunião semanal.`,excl:1},
+ "5.5":{p:"A área utiliza os métodos de melhoria contínua para avançar na aderência do 5S? (OBS: trabalhos voltados a qualquer tema para melhoria contínua da supervisão).",c:`Não há rotina nem responsável para registrar trabalhos de melhoria contínua da área.`,o:`Definir responsável e frequência para os trabalhos de melhoria contínua.`,h:`Escolher um tema da área, nomear responsável, registrar o trabalho no sistema e acompanhar mensalmente.`,excl:1},
+ "5.6":{p:"Há reincidência de Não conformidades em relação ao mês anterior?",c:`As não conformidades do mês anterior não tiveram ação concluída ou eficaz.`,o:`Listar as não conformidades reincidentes e fechar cada uma com dono e prazo.`,h:`Listar as NCs reincidentes (nomeando quais), garantir uma ação para cada uma e acompanhar semanalmente até a próxima auditoria.`,reinc:1},
+ "5.7":{p:"Todos os quatro sensos anteriores tiveram avaliação verde?",c:`As não conformidades dos sensos que não ficaram verdes não tiveram ação concluída.`,o:`Fechar as não conformidades dos sensos que não ficaram verdes.`,h:`Listar as NCs de cada senso não verde (nomeando quais), garantir uma ação para cada uma e acompanhar semanalmente até a próxima auditoria.`,reinc:1},
+};
+// Respostas-padrão por senso quando nenhuma situação é reconhecida
+const BASE={
+ 1:{c:"Itens sem uso permaneceram no posto por falta de triagem e de local definido.",o:"Retirar os itens sem uso e definir local para o que é necessário.",h:"Separar necessário x desnecessário com a equipe, dar destino ao que não tem uso e identificar o local do que fica."},
+ 2:{c:"Os itens não têm local definido e identificado.",o:"Definir e identificar um local fixo para cada item.",h:"Definir o local de cada item pela frequência de uso, identificar com etiqueta/demarcação e apresentar ao time."},
+ 3:{c:"O local não está no cronograma de limpeza ou a fonte da sujeira não foi tratada.",o:"Limpar o local e tratar a fonte da sujeira.",h:"Fazer a limpeza, corrigir a fonte da sujeira e incluir o local no cronograma de limpeza com responsável."},
+ 4:{c:"A condição de segurança/bem-estar não tem rotina de verificação nem reparo programado.",o:"Corrigir a condição e incluí-la na verificação da ronda.",h:"Corrigir a condição com a área responsável e incluir o item na checagem da ronda."},
+ 5:{c:"As rotinas e ações do 5S não têm acompanhamento definido (responsável e frequência).",o:"Definir responsável e frequência de acompanhamento das ações de 5S.",h:"Listar as pendências, definir dono e prazo para cada uma e acompanhar semanalmente."}
+};
+const ITENS=[["luva","luvas"],["garrafa","garrafas"],["japona","japonas"],["óculos","óculos"],["oculos","óculos"],["epi","EPIs"],["avental","aventais"],["mangote","mangotes"],["copo","copos"],["toca","toucas"],["máscara","máscaras"],["mascara","máscaras"],["celular","celulares"],["marmita","marmitas"]];
+function itensDe(t){const l=[];ITENS.forEach(([k,v])=>{if(t.includes(k)&&!l.includes(v))l.push(v)});return l.length>1?l.slice(0,-1).join(", ")+" e "+l.at(-1):(l[0]||"os itens")}
+
+function gerar(senso,texto,item){
+ const t=texto.toLowerCase().replace(/\s+/g," "), it0=CHECK[item], auto=JA_EXISTE.test(t);
+ const dupla=(id,manut,est,p,loc,gen)=>{const cp=comportamental(p,manut,loc);const m=id==="item"?(HI[item]||HS[senso]):id==="base"?HS[senso]:HR[id];
+  let eh=gerundio(est.h);if(m===1&&!/time|equipe|dds|trein|operador|colaborador/i.test(eh))eh=eh.replace(/\.$/,", apresentando o padrão a todos os operadores.");
+  return {id,manut:!!manut,generico:!!gen,sel:auto?"c":"e",opts:{e:{c:est.c,o:est.o,h:eh,m},c:{...cp,m:7}}}};
+ if(it0&&it0.excl) return [dupla("item",it0.manut,it0,PADI[item])];
+ if(it0&&it0.reinc){
+  const nomes=[["sele","Seleção"],["orden","Ordenação"],["limp","Limpeza"],["bem","Bem-estar"],["autodisc","Autodisciplina"]].filter(([k])=>t.includes(k)).map(x=>x[1]);
+  const lista=nomes.length?(nomes.length>1?nomes.slice(0,-1).join(", ")+" e "+nomes.at(-1):nomes[0]):"";
+  const r={...it0};
+  if(lista){r.c=r.c.replace(/\.$/,` (${lista}).`);r.h=r.h.replace(/de cada senso não verde \(nomeando quais\)|\(nomeando quais\)/,`de ${lista}`);}
+  return [dupla("item",false,r,PADI[item]+(lista?` (${lista})`:""))];
+ }
+ // 1) separa a ocorrência em não conformidades (cada trecho analisado sozinho)
+ const achados=[];
+ const regrasDe=x=>{let a=REGRAS.filter(r=>r.rx.test(x)).sort((p,q)=>x.search(p.rx)-x.search(q.rx));
+  const fora=new Set();a.forEach(r=>(SUPRIME[r.id]||[]).forEach(z=>fora.add(z)));return a.filter(r=>!fora.has(r.id));};
+ const partes=t.split(/\s*(?:;|\.(?=\s|$)|\n|,|\s\d+[.)-]\s|\balém d[eio]s?\b|\btamb[eé]m\b|\bassim como\b)\s*/).map(x=>x.trim().replace(/^(e|ou)\s+/,"")).filter(x=>x.length>2);
+ partes.forEach((parte,pi)=>{
+  // dentro do trecho, cada pedaço ligado por "e"/"ou" é analisado sozinho; pedaços sem situação reconhecida juntam-se ao seguinte
+  const sub=parte.split(/\s+(?:e|ou)\s+/).filter(x=>x.trim());
+  const blocos=[];let pend="";
+  sub.forEach(x=>{const tx=(pend?pend+" e ":"")+x;const rs=regrasDe(tx);pend="";
+   if(!rs.length){pend=tx;return;}
+   const ant=blocos[blocos.length-1];
+   if(ant&&ant.rs.map(r=>r.id).join()===rs.map(r=>r.id).join())ant.tx+=" e "+tx;else blocos.push({tx,rs});});
+  if(pend&&blocos.length){const ult=blocos[blocos.length-1];ult.tx+=" e "+pend;}
+  if(!blocos.length){const rs=regrasDe(parte);if(rs.length)blocos.push({tx:parte,rs});}
+  blocos.forEach(bl=>bl.rs.forEach(r=>achados.push({r,pi,trecho:r.id==="reinc"?parte:bl.tx})));
+ });
+ // 2) mesma situação em trechos diferentes vira um só plano; situações diferentes, planos separados
+ const grupos=[];
+ // manutenção: cada item/equipamento citado em trecho separado tem sua própria nota (plano próprio)
+ achados.forEach(({r,trecho,pi})=>{const g=grupos.find(x=>x.r.id===r.id&&(!r.manut||x.pi===pi));if(g){if(!g.trechos.includes(trecho))g.trechos.push(trecho)}else grupos.push({r,pi,trechos:[trecho]})});
+ let lista=grupos;
+ if(lista.some(g=>g.r.id==="reinc")) lista=lista.filter(g=>g.r.id==="reinc"||g.r.id==="quadro");
+ lista=lista.slice(0,8);
+ const acoes=lista.map(({r,trechos})=>{
+  const tx=trechos.join(" "), it=itensDe(tx.match(/luva|garrafa|japona|[oó]culos|epi|avental|mangote|copo|toca|m[aá]scara|celular|marmita/)?tx:t), f=x=>x.replace(/\{itens\}/g,it);
+  const loc=r.loc?(r.id==="pessoal"?`o suporte para ${it}`:r.loc):null;
+  const a=dupla(r.id,r.manut,{c:f(r.c),o:f(r.o),h:f(r.h)},f(PAD[r.id]),loc);
+  a.trecho=trechos.map(x=>x.charAt(0).toUpperCase()+x.slice(1)).join("; ");
+  return a;
+ });
+ if(acoes.length>1) acoes.forEach(a=>{const ref=a.trecho.charAt(0).toLowerCase()+a.trecho.slice(1);["e","c"].forEach(k=>{a.opts[k].o=a.opts[k].o.replace(/\.?$/,` (${ref}).`)})});
+ if(!acoes.length) acoes.push(it0?dupla("item",it0.manut,it0,PADI[item]):dupla("base",false,BASE[senso],PADS[senso],null,true));
+ return acoes;
+}
+
+/* ===== Diagrama de Hosotani – contramedidas contra reincidência de anomalias ===== */
+const HQ={e:"Existe procedimento padrão?",a:"O procedimento padrão é apropriado?",c:"O procedimento padrão estava sendo cumprido?"};
+const HOS={
+ 1:{p:[["e","Não"]],m:null,r:"Prepare um procedimento operacional padrão e garanta que todos os operadores sejam treinados"},
+ 2:{p:[["e","Sim"],["a","Não"]],m:"Não está numa forma utilizável",r:"Reescreva o padrão em conformidade com o método atual de trabalho"},
+ 3:{p:[["e","Sim"],["a","Não"]],m:"Os operadores têm dificuldade em entender",r:"Reescreva o padrão usando diagramas e figuras para fácil compreensão"},
+ 4:{p:[["e","Sim"],["a","Não"]],m:"Não é prático ou não conduz a bons resultados",r:"Reveja o padrão sob o ponto de vista técnico"},
+ 5:{p:[["e","Sim"],["a","Sim"],["c","Não"]],m:"Os operadores não compreendem o padrão",r:"Treine os operadores de acordo com os padrões"},
+ 6:{p:[["e","Sim"],["a","Sim"],["c","Não"]],m:"Os operadores não possuem habilidade para cumprir o padrão",r:"Dê treinamento técnico aos operadores ou os realoque para trabalhos diferentes"},
+ 7:{p:[["e","Sim"],["a","Sim"],["c","Não"]],m:"Os operadores não sentem necessidade de cumprir o padrão",r:"Instrua e guie os operadores a cumprir os padrões"},
+ 8:{p:[["e","Sim"],["a","Sim"],["c","Sim"]],m:"As condições de trabalho são inadequadas",r:"Melhore as condições de trabalho"},
+ 9:{p:[["e","Sim"],["a","Sim"],["c","Sim"]],m:"Procedimento fácil de errar ou equipamento complicado",r:"Melhore os métodos de trabalho, introduzindo mecanismos à prova de erro"}};
+// Caminho da opção ESTRUTURAL por situação (a COMPORTAMENTAL é sempre o caminho 7)
+const HR={reinc:1,regras:5,trein:5,quadro:1,lampada:8,eletrico:8,gambiarra:8,vazamento:8,fragil:8,civil:8,pragas:8,lixeiraQ:8,lixo:8,papeis:8,luvaLixo:8,pessoal:8,
+ pallet:1,obstru:1,extFalta:8,docs:2,sinaliz:8,ferram:1,ident:1,demarc:1,quebrado:8,energia:1,sujeira:1,desnec:1,forLugar:1};
+const HI={"1.1":1,"1.2":1,"1.3":8,"1.4":1,"1.5":8,"1.6":8,"1.7":1,"1.8":1,"1.9":1,"1.10":1,"1.11":1,"2.1":8,"2.2":2,"2.3":8,"2.4":8,"2.5":8,"2.6":1,"2.7":1,"2.8":1,
+ "3.1":1,"3.2":8,"3.3":8,"3.4":8,"3.5":1,"3.6":1,"3.7":8,"4.1":8,"4.2":8,"4.3":5,"4.4":5,"4.5":8,"5.1":1,"5.2":5,"5.3":1,"5.4":1,"5.5":1,"5.6":1,"5.7":1};
+const HS={1:1,2:1,3:1,4:8,5:1};
+function caminhoHTML(k){const h=HOS[k];
+ return h.p.map(([q,a])=>`<div class="hp"><span class="hq">${HQ[q]}</span> <b class="${a==="Sim"?"sim":"nao"}">${a}</b></div>`).join("")+
+  (h.m?`<div class="hp"><span class="hq">Motivo:</span> <b>${h.m}</b></div>`:"")+
+  `<div class="hr"><span class="hn">${k}</span>${h.r}</div>`;}
+function caminhoTxt(k){const h=HOS[k];return h.p.map(([q,a])=>`${HQ[q]} ${a}`).join(" → ")+(h.m?` → ${h.m}`:"")+` → (${k}) ${h.r}`}
+
+/* ===== Como sempre no gerúndio ===== */
+const GER_EXC=new Set(["anterior","colaborador","coletor","extintor","por","qualquer","supervisor","sair","lugar","par","maior","menor","valor","interior","exterior","superior","inferior","setor","motor","sensor","operador","favor","cor","calor","odor","ar","mar","bar","ter"]);
+function gerV(w){if(w==="repor")return "repondo";if(w==="dar")return "dando";if(w==="pôr")return "pondo";if(w.length<4||GER_EXC.has(w))return null;
+ if(/ar$/.test(w))return w.slice(0,-2)+"ando";if(/er$/.test(w))return w.slice(0,-2)+"endo";if(/ir$/.test(w))return w.slice(0,-2)+"indo";return null}
+function gerundio(h){
+ return h.replace(/(^|, |; | e | ou )([A-Za-zÀ-ú]+)(?=[\s,./]|$)/g,(m,pre,v)=>{
+  const w=v.toLowerCase();let g=gerV(w);
+  if(!g)return m;if(v[0]!==v[0].toLowerCase())g=g[0].toUpperCase()+g.slice(1);return pre+g;})
+  .replace(/ndo\/([a-zà-ú]+)\b/g,(m,v)=>{const g=gerV(v);return g?"ndo/"+g:m});
+}
+/* ===== Checagem do plano (o que a auditoria reprova) ===== */
+const VAGO=/intensific|refor[cç]ar o 5 ?s|manter (o )?5 ?s|garantir o senso|fazer movimento|conscientiz|sensibiliz/;
+const CULPA=/falha operacional|falha comportamental|falta de aten[cç]|desaten|descuido|neglig|desentendimento|n[aã]o comprometid|falta de comprometimento|falta de disciplina|baixa disciplina/;
+const SENSO_NA_CAUSA=/senso d[eao]|falha no senso|falha no 5 ?s|no 5 ?s do local/;
+const MANUT_TXT=/manuten|el[eé]trica|civil|reparo|conserto|consertar|trocar|substitui/;
+const ACAO_CONCRETA=/instal|abr(ir|indo) nota|defin|identific|demarc|troc|retir|substitu|nome|etiquet|mont|pint|levant|list|posicion|repar|corrig|inclu|isol|fix|ajust|verific/;
+const pal=s=>new Set(s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").match(/[a-z]{4,}/g)||[]);
+const parecido=(a,b)=>{const A=pal(a),B=pal(b);if(!A.size||!B.size)return 0;let n=0;A.forEach(x=>B.has(x)&&n++);return n/Math.max(A.size,B.size)};
+function checar(nc,c,o,h){
+ const al=[];const cl=c.toLowerCase(),ol=o.toLowerCase(),hl=h.toLowerCase();
+ if(CULPA.test(cl)) al.push("A causa culpa a pessoa ou é genérica. Pergunte \"por quê?\" até chegar em algo físico ou de processo.");
+ if(SENSO_NA_CAUSA.test(cl)) al.push("A causa usa o nome do senso. Diga o motivo real.");
+ if(c.length>5&&parecido(nc,c)>0.7) al.push("A causa está repetindo a ocorrência. Explique por que ela aconteceu.");
+ if(VAGO.test(ol)||VAGO.test(hl)) al.push("Verbo vago (intensificar, reforçar o 5S, conscientizar…). Use verbo + objeto concreto e verificável.");
+ if(o.length>5&&h.length>5&&parecido(o,h)>0.8) al.push("O Como está repetindo o O quê. Diga quem faz e por qual meio.");
+ if(/instruir|orientar|treinar|dds|dss|dto/.test(hl)&&!ACAO_CONCRETA.test(hl)&&!/treinamento|conhec|regras de ouro/.test(cl)) al.push("Orientação/DDS sozinho só vale quando a causa é falta de conhecimento. Inclua uma ação concreta ou a verificação.");
+ if(MANUT_TXT.test(ol+" "+hl)&&/manuten|el[eé]trica|civil/.test(ol+" "+hl)&&!/nota/.test(ol+" "+hl)) al.push("Envolve manutenção: inclua a abertura de nota com o número.");
+ if(h.length>3&&!/^\W*[A-Za-zÀ-ú]+ndo\b/i.test(h)) al.push("O Como deve começar com verbo no gerúndio (realizando, fazendo, instalando…).");
+ if((o+h).includes("________")) al.push("Falta preencher o número da nota.");
+ return al;
+}
+
+/* ===== Interface ===== */
+const $=id=>document.getElementById(id);
+let senso=0,atual=null;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const destaca=s=>esc(s).split(esc(NOTA)).join(`<span class="nota">${esc(NOTA)}</span>`);
+function toast(m){const e=$("toast");e.textContent=m;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),2200)}
+
+document.querySelectorAll(".senso").forEach(b=>b.onclick=()=>{
+ senso=+b.dataset.s;
+ document.querySelectorAll(".senso").forEach(x=>x.classList.toggle("on",x===b));
+ const sel=$("item");
+ sel.innerHTML='<option value="">Selecione a pergunta…</option>'+Object.entries(CHECK).filter(([k])=>k.startsWith(senso+".")).map(([k,v])=>`<option value="${k}">${k} – ${esc(v.p)}</option>`).join("")+'<option value="outro">Outra / não sei a pergunta</option>';
+ sel.disabled=false;$("itemTxt").textContent="";
+ const opcoes=[...sel.options].filter(o=>o.value);
+ $("itemLista").innerHTML=opcoes.map(o=>{const k=o.value,c=CHECK[k];return `<button type="button" class="iopt" data-v="${k}"><span class="inum">${c?k:"?"}</span><span>${c?esc(c.p):"Outra / não sei a pergunta"}</span></button>`}).join("");
+ $("itemLista").querySelectorAll(".iopt").forEach(b=>b.onclick=()=>{sel.value=b.dataset.v;$("itemLista").querySelectorAll(".iopt").forEach(x=>x.classList.toggle("on",x===b));sel.onchange();});
+ $("nc").disabled=true;$("nc").placeholder="Selecione a pergunta primeiro…";$("gerar").disabled=true;
+ $("res").style.display="none";atual=null;sel.focus();
+});
+
+$("item").onchange=()=>{
+ const v=$("item").value;
+ const ok=!!v;$("nc").disabled=!ok;$("gerar").disabled=!ok;
+ $("nc").placeholder=ok?"Ex.: Luvas e garrafas de água em cima da máquina.":"Selecione a pergunta primeiro…";
+ if(ok)$("nc").focus();if(atual)montar();
+};
+let ACOES=[],atualTxt="";
+const TIPO={e:"Estrutural",c:"Comportamental"};
+function montar(){
+ const txt=$("nc").value.trim();
+ const item=$("item").value;ACOES=gerar(senso,txt,item);atualTxt=txt;
+ const manut=ACOES.some(a=>a.manut);
+ $("resHead").innerHTML=`<span class="tag" style="background:${SENSOS[senso].cor}">${senso}º ${SENSOS[senso].nome}</span>`+
+  (manut?`<span class="tag m">Envolve manutenção</span>`:"")+
+  (ACOES.length>1?`<span class="tag m">${ACOES.length} não conformidades = ${ACOES.length} planos de ação</span>`:"")+
+  (CHECK[item]?`<p style="margin:8px 0 0;font-size:.9rem"><b>Pergunta:</b> ${item} – ${esc(CHECK[item].p)}</p>`:"")+
+  `<p style="margin:6px 0 0;font-size:.9rem"><b>Ocorrência:</b> ${esc(txt)}</p>`;
+ $("acoes").innerHTML=ACOES.map((a,i)=>`<div class="acao" data-i="${i}"></div>`).join("");
+ ACOES.forEach((a,i)=>renderAcao(i));
+ $("res").style.display="block";
+ atual={senso,txt,item};
+}
+function renderAcao(i){
+ const a=ACOES[i],op=a.opts[a.sel],el=$("acoes").querySelector(`.acao[data-i="${i}"]`);
+ el.innerHTML=`${ACOES.length>1?`<h3>Plano ${i+1}${a.trecho?`<span class="nct">Não conformidade: ${esc(a.trecho)}</span>`:""}</h3>`:""}
+  <div class="tabs"><button type="button" data-o="e" class="${a.sel==="e"?"on":""}">Estrutural</button><button type="button" data-o="c" class="${a.sel==="c"?"on":""}">Comportamental</button></div>
+  <div class="tabdesc">${a.sel==="e"?"Falta algo físico ou de processo: suporte, local, identificação, peça, rotina.":"O padrão existe, mas o colaborador não vê a necessidade de cumpri-lo."}</div>
+  ${a.generico&&a.sel==="e"?`<div class="aviso" style="margin:0 0 6px">Não reconheci uma situação específica. Usei a base do senso: ajuste a causa respondendo "por quê?" até chegar em algo físico ou de processo.</div>`:""}
+  <div class="ish"><div class="ishT">Diagrama de Hosotani – caminho ${op.m}</div>${caminhoHTML(op.m)}</div>
+  <div class="block"><h4>Causa</h4><div class="f" data-k="c" contenteditable="true">${esc(op.c)}</div></div>
+  <div class="block"><h4>O quê</h4><div class="f" data-k="o" contenteditable="true">${destaca(op.o)}</div></div>
+  <div class="block"><h4>Como</h4><div class="f" data-k="h" contenteditable="true">${destaca(op.h)}</div></div>
+  <div class="check"></div>`;
+ el.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{a.sel=b.dataset.o;renderAcao(i)});
+ el.querySelectorAll(".f").forEach(f=>f.addEventListener("input",()=>{op[f.dataset.k]=f.innerText.trim();verifica(el)}));
+ verifica(el);
+}
+function campos(el){const g=k=>el.querySelector(`[data-k="${k}"]`).innerText.trim();return {c:g("c"),o:g("o"),h:g("h")}}
+function verifica(el){
+ const f=campos(el),al=checar($("nc").value,f.c,f.o,f.h),box=el.querySelector(".check");
+ const so=al.length===1&&al[0].startsWith("Falta preencher");
+ box.className="check "+(al.length&&!so?"al":"ok");
+ box.innerHTML=!al.length?"✓ Plano dentro dos critérios da auditoria.":
+  (so?"✓ Plano dentro dos critérios. Só falta preencher o número da nota.":`<b>Pontos de atenção:</b><ul>${al.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`);
+}
+
+$("gerar").onclick=()=>{
+ const txt=$("nc").value.trim();
+ if(!senso){toast("Selecione o senso primeiro.");return}
+ if(txt.length<5){toast("Descreva a não conformidade.");$("nc").focus();return}
+ montar();$("res").scrollIntoView({behavior:"smooth"});
+};
+
+function capturar(){
+ return {...atual,id:Date.now(),dataFmt:new Date().toLocaleDateString("pt-BR"),
+  acoes:ACOES.map(a=>({tipo:TIPO[a.sel],nc:a.trecho||"",...a.opts[a.sel]}))};
+}
+const texto=o=>`NÃO CONFORMIDADE 5S — ${o.dataFmt}\nSenso: ${o.senso}º ${SENSOS[o.senso].nome}\n`+(CHECK[o.item]?`Pergunta: ${o.item} – ${CHECK[o.item].p}\n`:"")+`Ocorrência: ${o.txt}\n`+
+ o.acoes.map((a,i)=>`\n${o.acoes.length>1?`PLANO ${i+1}${a.nc?` – ${a.nc}`:""}\n`:""}TIPO: ${a.tipo||"Estrutural"}${a.m&&HOS[a.m]?`\nHOSOTANI: ${caminhoTxt(a.m)}`:""}\nCAUSA: ${a.c}\nO QUÊ: ${a.o}\nCOMO: ${a.h}`).join("\n");
+async function copiar(s){
+ try{await navigator.clipboard.writeText(s);toast("Copiado!")}
+ catch(e){const b=$("copybox");b.textContent=s;b.style.display="block";toast("Selecione e copie o texto abaixo.")}
+}
+$("copiar").onclick=()=>{if(atual)copiar(texto(capturar()))};
+
+const KEY="aux5s_hist_v8";let mem=[];
+const ler=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return mem}};
+const gravar=h=>{mem=h;try{localStorage.setItem(KEY,JSON.stringify(h))}catch(e){}};
+function render(){
+ const h=ler();
+ if(!h.length){$("hist").innerHTML='<p class="empty">Nenhuma ocorrência salva ainda.</p>';return}
+ $("hist").innerHTML=h.map(o=>`<div class="hist-item"><div class="top"><b style="color:${SENSOS[o.senso].cor}">${o.senso}º ${SENSOS[o.senso].nome}${CHECK[o.item]?` · ${o.item}`:""}${o.acoes.length>1?` · ${o.acoes.length} planos`:""}</b><span>${o.dataFmt}</span></div>
+ <div style="margin:4px 0 6px">${esc(o.txt)}</div><button data-c="${o.id}">Copiar</button><button data-d="${o.id}">Excluir</button></div>`).join("");
+ $("hist").querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>copiar(texto(ler().find(o=>o.id==b.dataset.c))));
+ $("hist").querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{gravar(ler().filter(o=>o.id!=b.dataset.d));render()});
+}
+$("salvar").onclick=()=>{if(!atual)return;const h=ler();h.unshift(capturar());gravar(h);render();toast("Salvo no histórico.")};
+$("copiarTodos").onclick=()=>{
+ const h=ler();if(!h.length){toast("Histórico vazio.");return}
+ const cab=["Data","Senso","Pergunta","Ocorrência","Plano","Não conformidade do plano","Tipo","Caminho Hosotani","Causa","O quê","Como"];
+ const L=[];h.forEach(o=>o.acoes.forEach((a,i)=>L.push([o.dataFmt,`${o.senso}º ${SENSOS[o.senso].nome}`,CHECK[o.item]?o.item:"",o.txt,String(i+1),a.nc||o.txt,a.tipo||"Estrutural",a.m&&HOS[a.m]?`${a.m} – ${HOS[a.m].r}`:"",a.c,a.o,a.h].map(x=>(x||"").replace(/[\t\n]/g," ")).join("\t"))));
+ copiar([cab.join("\t"),...L].join("\n"));
+};
+let conf=false;
+$("apagarTodos").onclick=()=>{
+ const b=$("apagarTodos");
+ if(!conf){conf=true;b.textContent="Toque de novo para confirmar";setTimeout(()=>{conf=false;b.textContent="Apagar histórico"},3000);return}
+ gravar([]);render();conf=false;b.textContent="Apagar histórico";toast("Histórico apagado.");
+};
+$("limpar").onclick=()=>{$("nc").value="";senso=0;atual=null;document.querySelectorAll(".senso").forEach(x=>x.classList.remove("on"));
+ $("item").innerHTML='<option value="">Selecione o senso primeiro…</option>';$("itemLista").innerHTML='<p class="empty">Selecione o senso primeiro.</p>';$("item").disabled=true;$("itemTxt").textContent="";
+ $("nc").disabled=true;$("nc").placeholder="Selecione o senso primeiro…";$("gerar").disabled=true;$("res").style.display="none";window.scrollTo({top:0,behavior:"smooth"})};
+render();
+</script>
+</body>
+</html>
